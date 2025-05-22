@@ -27,10 +27,10 @@ importers:
         specifier: 15.3.2
         version: 15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react:
-        specifier: ^19.0.0
+        specifier: ^19.1.0
         version: 19.1.0
       react-dom:
-        specifier: ^19.0.0
+        specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
     devDependencies:
       '@eslint/eslintrc':
@@ -40,10 +40,10 @@ importers:
         specifier: ^20
         version: 20.17.50
       '@types/react':
-        specifier: ^19
+        specifier: ^19.1.5
         version: 19.1.5
       '@types/react-dom':
-        specifier: ^19
+        specifier: ^19.1.5
         version: 19.1.5(@types/react@19.1.5)
       autoprefixer:
         specifier: ^10.4.21
@@ -87,7 +87,19 @@ importers:
       lib:
         specifier: workspace:*
         version: link:../lib
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.1.0(react@19.1.0)
     devDependencies:
+      '@types/react':
+        specifier: ^19.1.5
+        version: 19.1.5
+      '@types/react-dom':
+        specifier: ^19.1.5
+        version: 19.1.5(@types/react@19.1.5)
       autoprefixer:
         specifier: ^10.4.21
         version: 10.4.21(postcss@8.5.3)
