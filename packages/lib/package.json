@@ -7,6 +7,7 @@
   "packageManager": "pnpm@10.11.0",
   "private": true,
   "scripts": {
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "echo \"No tests yet\" && exit 0"
   }
 }

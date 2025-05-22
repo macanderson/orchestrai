@@ -17,6 +17,7 @@
     "tailwindcss": "^4.1.7"
   },
   "scripts": {
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "echo \"No tests yet\" && exit 0"
   }
 }
