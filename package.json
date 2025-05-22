@@ -14,7 +14,8 @@
     "dev": "concurrently \"pnpm --filter web dev\" \"pnpm --filter api dev\"",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "generate:prisma:py": "cd packages/db/prisma && prisma generate --generator python"
+    "generate:prisma:py": "cd packages/db/prisma && prisma generate --generator python",
+    "type-check": "pnpm -r run type-check"
   },
   "dependencies": {
     "typescript": "^5.8.3"
