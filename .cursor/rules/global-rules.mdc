@@ -1,0 +1,15 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Global Cursor Rules
+
+## 1. Developer Name and Contact Information
+- Name: Mac Anderson
+- Email: mac@macanderson.com
+- Website: macanderson.com
+- Github: https://github.com/macanderson
+- Company Name: The Unnatural Group, LLC
+- Default License (if not already specified): Apache v2.0
+

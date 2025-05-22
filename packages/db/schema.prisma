@@ -1,125 +1,338 @@
 // Prisma schema for Supabase (PostgreSQL)
 
-generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["multiSchema"]
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["public", "auth", "storage", "orchestrai"]
+  schemas  = ["public", "ai", "auth", "api"]
+}
+
+generator client_py {
+  provider        = "prisma-client-py"
+  output         = "../../apps/api/db/client"
+  previewFeatures = ["multiSchema"]
+}
+
+generator client_ts {
+  provider        = "prisma-client-js"
+  output         = "../../apps/web/node_modules/@prisma/client"
+  previewFeatures = ["multiSchema"]
+}
+
+enum LicenseType {
+  FREE
+  BASIC
+  PRO
+  ENTERPRISE
+  CUSTOM
+
+  @@map("license_types")
+  @@schema("auth")
+}
+
+model License {
+  id        String      @id @default(uuid())
+  type      LicenseType @default(FREE)
+
+  // Children
+  tenants   Tenant[]    @relation("LicenseTenants")
+
+  // Audit fields
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+  deleted   Boolean     @default(false) @map("deleted")
+  deletedAt DateTime?   @map("deleted_at")
+
+  @@map("licenses")
+  @@schema("auth")
 }
 
 model Tenant {
-  id        String    @id @default(uuid())
-  name      String
-  slug      String    @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deleted   Boolean   @default(false)
-  deletedAt DateTime?
-  users     User[]
+  id               String    @id @default(uuid())
+  name             String
+  slug             String    @unique
+  billingEmail     String?   @map("billing_email")
+  billingPhone     String?   @map("billing_phone")
+  billingAddress   String?   @map("billing_address")
+  billingAddress2  String?   @map("billing_address_2")
+  billingCity      String?   @map("billing_city")
+  billingState     String?   @map("billing_state")
+  billingZip       String?   @map("billing_zip")
+  billingCountry   String?   @map("billing_country")
+  billingVatNumber String?   @map("billing_vat_number")
+
+  // Children
+  users     User[]          @relation("TenantUsers")
+  projects  Project[]       @relation("TenantProjects")
+  jobs      Job[]           @relation("TenantJobs")
+  agents    Agent[]         @relation("TenantAgents")
+
+  // Parent
+  licenseId String?
+  license   License?  @relation("LicenseTenants", fields: [licenseId], references: [id])
+
+  // Audit fields
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deleted   Boolean   @default(false) @map("deleted")
+  deletedAt DateTime? @map("deleted_at")
 
   @@map("tenants")
-  @@schema("orchestrai")
+  @@schema("auth")
 }
 
-model Role {
-  id          String    @id @default(uuid())
-  name        String
-  permissions Json // Store permissions as JSON
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deleted     Boolean   @default(false)
-  deletedAt   DateTime?
-  users       User[]
+enum UserRoleType {
+  BUSINESS_ADMIN
+  BUSINESS_USER
+  CUSTOMER_ADMIN
+  CUSTOMER_USER
 
-  @@map("roles")
-  @@schema("orchestrai")
+  @@map("user_role_types")
+  @@schema("auth")
+}
+
+model UserRole {
+  id          String        @id @default(uuid())
+  name        String
+  type        UserRoleType  @default(BUSINESS_ADMIN)
+  permissions Json          @default("{\"role\": \"default\"}")
+
+  // Children
+  users       User[]        @relation("UserRoleUsers")
+
+  // Audit fields
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  deleted     Boolean       @default(false) @map("deleted")
+  deletedAt   DateTime?     @map("deleted_at")
+
+  @@map("user_roles")
+  @@schema("auth")
 }
 
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  emailVerified DateTime?
-  firstName     String?
-  lastName      String?
-  imageUrl      String?
-  passwordHash  String?
-  roleId        String?
-  role          Role?     @relation(fields: [roleId], references: [id])
-  tenantId      String?
-  tenant        Tenant?   @relation(fields: [tenantId], references: [id])
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  deleted       Boolean   @default(false)
-  deletedAt     DateTime?
+  id            String          @id @default(uuid())
+  email         String          @unique
+  emailVerified DateTime?       @map("email_verified")
+  firstName     String?         @map("first_name")
+  lastName      String?         @map("last_name")
+  imageUrl      String?         @map("image_url")
+  passwordHash  String?         @map("password_hash")
+
+  // Parents
+  roleId        String?         @map("role_id")
+  role          UserRole?       @relation("UserRoleUsers", fields: [roleId], references: [id])
+  tenantId      String?         @map("tenant_id")
+  tenant        Tenant?         @relation("TenantUsers", fields: [tenantId], references: [id])
+
+  // Children
+  projects      Project[]       @relation("UserProjects")
+
+  // Audit fields
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+  deleted       Boolean         @default(false) @map("deleted")
+  deletedAt     DateTime?       @map("deleted_at")
 
   @@map("users")
-  @@schema("orchestrai")
+  @@schema("auth")
 }
 
 model Candidate {
   id                String         @id @default(uuid())
-  firstName         String
-  lastName          String
+  firstName         String         @map("first_name")
+  lastName          String         @map("last_name")
   email             String         @unique
   phone             String?
-  resumeUrl         String?
-  linkedinUrl       String?
-  currentTitle      String?
-  currentCompany    String?
-  yearsOfExperience Int?
+  resumeUrl         String?        @map("resume_url")
+  linkedinUrl       String?        @map("linkedin_url")
+  currentTitle      String?        @map("current_title")
+  currentCompany    String?        @map("current_company")
+  yearsOfExperience Int?           @map("years_of_experience")
   skills            String[]
-  status            String         @default("active") // active, archived, hired
-  source            String? // where the candidate came from
+  status            String         @default("active") @map("status")
+  source            String?        @map("source")
   notes             String?
-  jobCandidates     JobCandidate[]
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
-  deleted           Boolean        @default(false)
-  deletedAt         DateTime?
+
+  // Children
+  jobCandidates     JobCandidate[] @relation("CandidateJobCandidates")
+
+  // Audit fields
+  createdAt         DateTime       @default(now()) @map("created_at")
+  updatedAt         DateTime       @updatedAt @map("updated_at")
+  deleted           Boolean        @default(false) @map("deleted")
+  deletedAt         DateTime?      @map("deleted_at")
 
   @@map("candidates")
-  @@schema("orchestrai")
+  @@schema("api")
 }
 
+enum JobStatus {
+  DRAFT
+  OPEN
+  FILLED
+  CANCELLED
+
+  @@map("job_statuses")
+  @@schema("api")
+}
 model Job {
-  id            String         @id @default(uuid())
+  id            String          @id @default(uuid())
   title         String
-  description   String
+  status        JobStatus       @default(DRAFT) @map("status")
+  description   String?
   requirements  String[]
+  keywords      String[]
   location      String?
-  type          String? // full-time, part-time, contract
-  status        String         @default("open") // open, closed, draft
-  salaryRange   String?
+  type          String?         @map("type")
+  salaryRange   String?         @map("salary_range")
   department    String?
-  jobCandidates JobCandidate[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  deleted       Boolean        @default(false)
-  deletedAt     DateTime?
+
+  // Parents
+  tenantId      String          @map("tenant_id")
+  tenant        Tenant          @relation("TenantJobs", fields: [tenantId], references: [id])
+
+  // Children
+  jobCandidates JobCandidate[]  @relation("JobJobCandidates")
+
+  // Audit fields
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+  deleted       Boolean         @default(false) @map("deleted")
+  deletedAt     DateTime?       @map("deleted_at")
 
   @@map("jobs")
-  @@schema("orchestrai")
+  @@schema("api")
 }
 
 model JobCandidate {
   id          String    @id @default(uuid())
-  jobId       String
-  job         Job       @relation(fields: [jobId], references: [id])
-  candidateId String
-  candidate   Candidate @relation(fields: [candidateId], references: [id])
-  status      String    @default("applied") // applied, screening, interview, offer, hired, rejected
-  stage       String? // current stage in the hiring process
+  status      String    @default("applied") @map("status")
+  stage       String?   @map("stage")
   notes       String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deleted     Boolean   @default(false)
-  deletedAt   DateTime?
+
+  // Parents
+  jobId       String    @map("job_id")
+  job         Job       @relation("JobJobCandidates", fields: [jobId], references: [id])
+  candidateId String    @map("candidate_id")
+  candidate   Candidate @relation("CandidateJobCandidates", fields: [candidateId], references: [id])
+
+  // Audit fields
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deleted     Boolean   @default(false) @map("deleted")
+  deletedAt   DateTime? @map("deleted_at")
 
   @@unique([jobId, candidateId])
   @@map("job_candidates")
-  @@schema("orchestrai")
+  @@schema("api")
+}
+
+model Project {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  query       String?
+
+  // Parents
+  tenantId    String    @map("tenant_id")
+  tenant      Tenant    @relation("TenantProjects", fields: [tenantId], references: [id])
+  userId      String    @map("user_id")
+  user        User      @relation("UserProjects", fields: [userId], references: [id])
+
+  // Audit fields
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deleted     Boolean   @default(false) @map("deleted")
+  deletedAt   DateTime? @map("deleted_at")
+
+  @@map("projects")
+  @@schema("api")
+}
+
+enum AgentType {
+  ASSISTANT
+  DISPATCHER
+  DATA_PROCESSOR
+  SQL_RUNNER
+  WEB_SCRAPER
+  SENTIMENT_ANALYZER
+  RECOMMENDER
+  REPORT_BUILDER
+  EMAIL_GENERATOR
+  SMS_GENERATOR
+  SCHEDULER
+  TASK_MANAGER
+
+  @@map("agent_types")
+  @@schema("ai")
+}
+
+model Agent {
+  id                  String      @id @default(uuid())
+  name                String      @map("name")
+  description         String?     @map("description")
+  type                AgentType   @default(ASSISTANT)
+  prompt              String?     @map("prompt")
+  temperature         Float?      @map("temperature")
+  maxTokens           Int?        @map("max_tokens")
+  topP                Float?      @map("top_p")
+  frequencyPenalty    Float?      @map("frequency_penalty")
+  presencePenalty     Float?      @map("presence_penalty")
+  stopSequence        String[]    @map("stop_sequence")
+  stopSequenceTokens  String[]    @map("stop_sequence_tokens")
+  config              Json?       @map("config")
+
+  // Parents
+  tenantId            String      @map("tenant_id")
+  tenant              Tenant      @relation("TenantAgents", fields: [tenantId], references: [id])
+
+  // Children
+  conversations       Conversation[]    @relation("AgentConversations")
+  agentTasks          AgentTask[]       @relation("AgentTasks")
+
+  // Audit fields
+  createdAt DateTime  @default(now())     @map("created_at")
+  updatedAt DateTime  @updatedAt          @map("updated_at")
+  deleted   Boolean   @default(false)     @map("deleted")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("agents")
+  @@schema("ai")
+}
+
+model Conversation {
+  id          String      @id @default(uuid())
+  agentId     String      @map("agent_id")
+  agent       Agent       @relation("AgentConversations", fields: [agentId], references: [id])
+  agentTasks  AgentTask[] @relation("AgentTasks")
+
+  // Audit fields
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  deleted     Boolean     @default(false) @map("deleted")
+  deletedAt   DateTime?   @map("deleted_at")
+
+  @@map("conversations")
+  @@schema("ai")
+}
+
+model AgentTask {
+  id             String       @id @default(uuid())
+  agentId        String       @map("agent_id")
+  agent          Agent        @relation("AgentTasks", fields: [agentId], references: [id])
+  name           String       @map("name")
+  description    String?      @map("description")
+
+  // Parents
+  conversationId String       @map("conversation_id")
+  conversation   Conversation @relation("AgentTasks", fields: [conversationId], references: [id])
+
+  // Audit fields
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deleted     Boolean   @default(false) @map("deleted")
+  deletedAt   DateTime? @map("deleted_at")
+
+  @@map("agent_tasks")
+  @@schema("ai")
 }

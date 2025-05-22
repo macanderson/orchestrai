@@ -79,3 +79,13 @@ def fetch_user(user_id: int) -> UserProfile:
 - Declare dependencies in pyproject.toml (PEP 621) or requirements.txt; pin versions for reproducibility
 - Expose only necessary packages in setup.py or pyproject.toml
 - Include a README.md with basic usage examples
+
+## 11. Package Dependencies
+
+- Use poetry and pyproject.toml for managing project packages and dependencies.
+- Always use the format my-python-app/src/my_python_app/main.py (package is same name inside a src/ directory)
+- When using poetry dev dependencies should be organized underneath of `[tool.poetry.group.dev.dependencies]` in pyproject.toml
+- When making requirements.txt files do so without hashes.
+- Write code using the latest 3.13 version standards including f strings for formatting.
+- Module resolution should be the fully qualified module path (.settings.config should by my_module.settings.config NO dot notation for module resolution)
+- When writing pyproject.toml packages should be private by default. Use Mac Anderson as the developers name and mac@macanderson.com as the developers email.

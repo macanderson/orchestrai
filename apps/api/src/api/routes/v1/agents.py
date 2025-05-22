@@ -1,20 +1,23 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
-from typing import List, Dict, Any, Optional
+from typing import List
 from ....schemas.agent import AgentCreate, AgentResponse
 from ....core.auth import get_current_user
 import time
+from ....db.prisma_client import get_prisma_client
+from ....db.models import User
 
 router = APIRouter()
+
 
 @router.post("/", response_model=AgentResponse)
 async def create_agent(
     data: AgentCreate,
-    current_user = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None
 ):
     """Create a new chat agent"""
     tenant_id = request.state.tenant_id
-    
+
     # Check if user has access to the project
     project = await request.state.prisma.project.find_first(
         where={
@@ -30,10 +33,10 @@ async def create_agent(
             }
         }
     )
-    
+
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
-    
+
     # Create the agent
     current_time = int(time.time())
     agent = await request.state.prisma.agent.create({
@@ -48,7 +51,7 @@ async def create_agent(
             "updated_by": current_user.id,
         }
     })
-    
+
     return agent
 
 @router.get("/{project_id}", response_model=List[AgentResponse])
@@ -59,7 +62,7 @@ async def get_agents(
 ):
     """Get all agents for a project"""
     tenant_id = request.state.tenant_id
-    
+
     # Check if user has access to the project
     project = await request.state.prisma.project.find_first(
         where={
@@ -75,10 +78,10 @@ async def get_agents(
             }
         }
     )
-    
+
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
-    
+
     # Get all agents for the project
     agents = await request.state.prisma.agent.find_many(
         where={
@@ -89,7 +92,7 @@ async def get_agents(
             "created_at": "desc"
         }
     )
-    
+
     return agents
 
 @router.get("/detail/{agent_id}", response_model=AgentResponse)
@@ -100,16 +103,16 @@ async def get_agent(
 ):
     """Get a specific agent"""
     tenant_id = request.state.tenant_id
-    
+
     # Get the agent with project info
     agent = await request.state.prisma.agent.find_unique(
         where={"id": agent_id},
         include={"project": True}
     )
-    
+
     if not agent or agent.deleted_at:
         raise HTTPException(status_code=404, detail="Agent not found")
-    
+
     # Check if user has access to the project
     project = await request.state.prisma.project.find_first(
         where={
@@ -125,8 +128,8 @@ async def get_agent(
             }
         }
     )
-    
+
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
-    
+
     return agent
