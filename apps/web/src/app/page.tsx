@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui";
 
 export default function Home() {
   // Check if user is logged in

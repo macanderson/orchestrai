@@ -1,33 +1,22 @@
 import React from "react";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
+import { Toaster } from "react-hot-toast";
+import { TenantProvider } from "@/providers/TenantProvider";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import "@/styles/globals.css";
-
-// Placeholder Toaster
-const Toaster = () => null;
-// Placeholder TenantProvider
-const TenantProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-  tenantId: string;
-}) => <>{children}</>;
-// Placeholder ThemeProvider
-const ThemeProvider = ({ children }: { children: React.ReactNode }) => (
-  <>{children}</>
-);
 
 export const metadata: Metadata = {
   title: "DocuChat - Chat with Documentation",
   description: "A RAG-based documentation chat system",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const tenantId = cookieStore.get("X-Tenant-Id")?.value || "";
 
   return (
