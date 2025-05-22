@@ -10,8 +10,20 @@
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.11.0",
+  "prisma": {
+    "schema": "schema.prisma",
+    "generator": [
+      {
+        "name": "prisma-erd-generator",
+        "output": "../docs/public/schema"
+      }
+    ]
+  },
   "dependencies": {
     "@prisma/client": "^6.8.2",
     "prisma": "^6.8.2"
+  },
+  "devDependencies": {
+    "prisma-erd-generator": "^2.0.4"
   }
 }

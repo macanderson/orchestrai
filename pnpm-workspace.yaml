@@ -2,8 +2,10 @@ packages:
   - apps/web
   - apps/api
   - packages/db
+  - packages/ui
+  - packages/lib
 onlyBuiltDependencies:
-  - '@prisma/client'
+  - "@prisma/client"
   - prisma
   - sharp
   - unrs-resolver

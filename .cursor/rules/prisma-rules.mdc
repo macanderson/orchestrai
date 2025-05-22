@@ -1,0 +1,64 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Prisma Schema Guidelines
+
+## 1. Model and Table Naming Conventions
+
+### Model Names
+
+- Use PascalCase for model names (e.g., `User`, `OrderItem`)
+- Use singular form (e.g., `User` not `Users`)
+- Map to plural snake_case table names using `@@map` (e.g., `@@map("users")`)
+
+### Required Audit Fields
+
+Every model must include these audit fields:
+
+#### createdAt
+
+- Type: `DateTime`
+- Purpose: Record creation timestamp
+- Default: `@default(now())`
+
+#### updatedAt
+
+- Type: `DateTime`
+- Purpose: Last update timestamp
+- Default: `@updatedAt`
+
+#### deleted
+
+- Type: `Boolean`
+- Purpose: Soft-delete flag
+- Default: `@default(false)`
+
+#### deletedAt
+
+- Type: `DateTime?` (nullable)
+- Purpose: Soft-delete timestamp
+- Default: `null`
+
+## 2. Field Naming Conventions
+
+### Field Names
+
+- Use camelCase for field names (e.g., `firstName`, `orderTotal`)
+- Map to snake_case using `@map` (e.g., `@map("first_name")`)
+- Use `uuid()` for ID fields (e.g., `@id @default(uuid())`)
+
+## 3. General Naming Conventions
+
+### Types & Interfaces
+
+- Use PascalCase (e.g., `UserProfile`, `IOrderItem`)
+
+### Variables & Functions
+
+- Use camelCase (e.g., `getUserById`, `orderTotal`)
+
+### Constants
+
+- Use UPPER_SNAKE_CASE (e.g., `MAX_RETRY_COUNT`)

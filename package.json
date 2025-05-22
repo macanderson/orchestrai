@@ -2,7 +2,9 @@
   "private": true,
   "workspaces": [
     "apps/web",
-    "apps/api"
+    "apps/api",
+    "packages/db",
+    "packages/ui"
   ],
   "devDependencies": {
     "concurrently": "^9.1.2",
@@ -11,6 +13,10 @@
   "scripts": {
     "dev": "concurrently \"pnpm --filter web dev\" \"pnpm --filter api dev\"",
     "build": "turbo run build",
-    "lint": "turbo run lint"
+    "lint": "turbo run lint",
+    "generate:prisma:py": "cd packages/db/prisma && prisma generate --generator python"
+  },
+  "dependencies": {
+    "typescript": "^5.8.3"
   }
 }

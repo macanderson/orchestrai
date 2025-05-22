@@ -1,18 +1,125 @@
 // Prisma schema for Supabase (PostgreSQL)
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["public", "auth", "storage", "orchestrai"]
 }
 
-// Example model
+model Tenant {
+  id        String    @id @default(uuid())
+  name      String
+  slug      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deleted   Boolean   @default(false)
+  deletedAt DateTime?
+  users     User[]
+
+  @@map("tenants")
+  @@schema("orchestrai")
+}
+
+model Role {
+  id          String    @id @default(uuid())
+  name        String
+  permissions Json // Store permissions as JSON
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deleted     Boolean   @default(false)
+  deletedAt   DateTime?
+  users       User[]
+
+  @@map("roles")
+  @@schema("orchestrai")
+}
+
 model User {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-  name  String
-  // Add more fields as needed
-} 
+  id            String    @id @default(uuid())
+  email         String    @unique
+  emailVerified DateTime?
+  firstName     String?
+  lastName      String?
+  imageUrl      String?
+  passwordHash  String?
+  roleId        String?
+  role          Role?     @relation(fields: [roleId], references: [id])
+  tenantId      String?
+  tenant        Tenant?   @relation(fields: [tenantId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deleted       Boolean   @default(false)
+  deletedAt     DateTime?
+
+  @@map("users")
+  @@schema("orchestrai")
+}
+
+model Candidate {
+  id                String         @id @default(uuid())
+  firstName         String
+  lastName          String
+  email             String         @unique
+  phone             String?
+  resumeUrl         String?
+  linkedinUrl       String?
+  currentTitle      String?
+  currentCompany    String?
+  yearsOfExperience Int?
+  skills            String[]
+  status            String         @default("active") // active, archived, hired
+  source            String? // where the candidate came from
+  notes             String?
+  jobCandidates     JobCandidate[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  deleted           Boolean        @default(false)
+  deletedAt         DateTime?
+
+  @@map("candidates")
+  @@schema("orchestrai")
+}
+
+model Job {
+  id            String         @id @default(uuid())
+  title         String
+  description   String
+  requirements  String[]
+  location      String?
+  type          String? // full-time, part-time, contract
+  status        String         @default("open") // open, closed, draft
+  salaryRange   String?
+  department    String?
+  jobCandidates JobCandidate[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  deleted       Boolean        @default(false)
+  deletedAt     DateTime?
+
+  @@map("jobs")
+  @@schema("orchestrai")
+}
+
+model JobCandidate {
+  id          String    @id @default(uuid())
+  jobId       String
+  job         Job       @relation(fields: [jobId], references: [id])
+  candidateId String
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+  status      String    @default("applied") // applied, screening, interview, offer, hired, rejected
+  stage       String? // current stage in the hiring process
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deleted     Boolean   @default(false)
+  deletedAt   DateTime?
+
+  @@unique([jobId, candidateId])
+  @@map("job_candidates")
+  @@schema("orchestrai")
+}

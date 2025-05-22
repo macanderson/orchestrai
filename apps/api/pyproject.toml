@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "orchestrai-api"
+version = "0.1.0"
+description = "API service for OrchestrAI"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+packages = [{ include = "your_package_name" }]  # Replace with your actual package/module name
+
+[tool.poetry.dependencies]
+python = "^3.11"
+prisma = "^0.15.0"  # Or the version you need
+fastapi = "^0.115.12"
+uvicorn = "^0.34.2"
+fastapi-jwt-auth = "^0.5.0"
+beautifulsoup4 = "^4.13.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^8.0.0"
+black = "^24.0.0"
+flake8 = "^7.0.0"
+mypy = "^1.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
