@@ -1,0 +1,13 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Repo Rules
+
+## 1. Scaffolding & Code Organization
+
+- Turborepo monorepo should be used to manage this project.
+- This project will be deployed to vercel consider this when configuring project files.
+- The ./packages/ directory in this repo's root is where code that is shared between packages should live.
+- All config files that can be shared between apps should be organizaed logically in a config package.

@@ -1,0 +1,56 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Typescript Rules
+
+1.	File & Module Structure
+
+  - Always generate one exported class, interface or function per file.
+  - Name files in kebab-case matching the default export (e.g. user-service.ts for export class UserService).
+
+2.	Naming Conventions
+
+  - Types & Interfaces: PascalCase (e.g. UserProfile, IOrderItem).
+  - Variables & Functions: camelCase (e.g. getUserById, orderTotal).
+  - Constants: UPPER_SNAKE_CASE (e.g. MAX_RETRY_COUNT).
+
+3.	Type Safety
+
+  - Declare explicit return types on all functions.
+  - Never use the any type—opt for unknown or a more specific type.
+  - Use generics for reusable utilities (e.g. function wrapResult<T>(data: T): Result<T> { … }).
+
+4.	Imports & Exports
+
+  - Use absolute imports from your project root (via paths in tsconfig.json), not relative dots.
+  - Always export interfaces/types before implementation.
+
+5.	Formatting & Linting
+
+  - Wrap code blocks in triple backticks with ts tag when returning via chat (e.g. ```ts … ```).
+  - Adhere to Prettier defaults: 2-space indent, single quotes, semicolons.
+  - Include ESLint-disable comments only with a brief justification.
+
+6.	Documentation
+  - Precede every exported function or class with a JSDoc block:
+
+```typescript
+/**
+ * Fetches a user by ID.
+ * @param userId – numeric identifier
+ * @returns Promise resolving to UserProfile
+ */
+export async function getUserById(userId: number): Promise<UserProfile> { … }
+```
+
+7.	Error Handling
+
+  - Use try/catch around external calls and rethrow as a typed error (e.g. new ServiceError('Failed to load user', err)).
+  - Prefer returning Result<T, E> over throwing, when part of your shared utility library.
+
+8.	Tests
+
+  - For every public function, generate a matching Jest test stub in __tests__ folder using describe/it.
+  - Inject mocks via dependency parameters, not by stubbing internal imports.

@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "apps/api"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "turbo": "^1.13.3"
+  },
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter web dev\" \"pnpm --filter api dev\"",
+    "build": "turbo run build",
+    "lint": "turbo run lint"
+  }
+}

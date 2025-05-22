@@ -1,0 +1,81 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Python Code Style Guide
+
+## 1. File & Module Structure
+
+- One public class, function, or constant per module
+- File names in snake_case matching their primary export (e.g. `user_service.py` for class `UserService`)
+- Group related modules into packages; include an `__init__.py` to expose only public APIs
+
+## 2. Naming Conventions
+
+- Modules & variables: snake_case (e.g. `order_total`, `data_loader`)
+- Functions & methods: snake_case (e.g. `fetch_user_by_id`)
+- Classes: PascalCase (e.g. `UserProfile`, `OrderProcessor`)
+- Constants: UPPER_SNAKE_CASE (e.g. `MAX_RETRY_COUNT`)
+
+## 3. Type Hints & Signatures
+
+- Annotate all public functions and methods with full type hints (parameters + return)
+- Avoid untyped globals; prefer explicit types over Any
+- Use TypedDict, Protocol, or dataclasses for structured data
+
+## 4. Imports
+
+- Standard library imports first, then third-party, then local—each group separated by a blank line
+- Always import specific names (e.g. `from datetime import datetime`), not wildcards
+- Use absolute imports within your package
+
+## 5. Formatting & Linting
+
+- Adhere to PEP 8; run black with default settings
+- Enforce lint rules with flake8 or pylint; disable rules sparingly with inline comments
+- Wrap code examples in triple backticks with python tag when returning via chat
+
+## 6. Docstrings & Comments
+
+- Every public class/function gets a Google-style or NumPy-style docstring:
+
+```python
+def fetch_user(user_id: int) -> UserProfile:
+    """Fetch a user by ID.
+
+    Args:
+        user_id (int): Unique user identifier.
+
+    Returns:
+        UserProfile: The user's profile data.
+    """
+    ...
+```
+
+- Use inline comments only for non-obvious logic; keep them concise
+
+## 7. Error Handling
+
+- Catch specific exceptions, not bare `except:`
+- Wrap external calls in try/except and rethrow domain-specific exceptions
+- Prefer returning Result[T, E]-style objects only if you have a shared utility; otherwise use exceptions
+
+## 8. Logging
+
+- Use the standard logging module; get a module-level logger via `logger = logging.getLogger(__name__)`
+- Log at appropriate levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+- Never log sensitive data (passwords, tokens)
+
+## 9. Testing
+
+- Place tests in `tests/` or alongside modules as `test_*.py`
+- Use pytest; write one test module per production module
+- For each public function/class, include both success and failure cases
+- Mock external dependencies with monkeypatch or pytest-mock
+
+## 10. Packaging & Dependencies
+
+- Declare dependencies in pyproject.toml (PEP 621) or requirements.txt; pin versions for reproducibility
+- Expose only necessary packages in setup.py or pyproject.toml
+- Include a README.md with basic usage examples
