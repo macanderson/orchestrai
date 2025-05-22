@@ -66,3 +66,6 @@ node_modules/
 .vercel
 *.tsbuildinfo
 next-env.d.ts
+
+# turbo
+.turbo/
