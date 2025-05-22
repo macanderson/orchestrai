@@ -1,23 +1,20 @@
-import React from "react";
-import { Metadata } from "next";
-import { cookies } from "next/headers";
-import { Toaster } from "react-hot-toast";
-import { TenantProvider } from "@/providers/TenantProvider";
-import { ThemeProvider } from "@/providers/ThemeProvider";
-import "@/styles/globals.css";
+import { TenantProvider } from '@/providers/TenantProvider';
+import { ThemeProvider } from '@/providers/ThemeProvider';
+import { Metadata } from 'next';
+import { cookies } from 'next/headers';
+import React from 'react';
+import { Toaster } from 'react-hot-toast';
+
+import '@/styles/global.css';
 
 export const metadata: Metadata = {
-  title: "DocuChat - Chat with Documentation",
-  description: "A RAG-based documentation chat system",
+  title: 'OrchestrAI - AI-powered agents for your business',
+  description: 'AI-powered agent generation for your business',
 };
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
-  const tenantId = cookieStore.get("X-Tenant-Id")?.value || "";
+  const tenantId = cookieStore.get('X-Tenant-Id')?.value || '';
 
   return (
     <html lang="en">

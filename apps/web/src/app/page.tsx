@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-export default function Home() {
+export default async function Home() {
   // Check if user is logged in
 
   const cookieStore = cookies();

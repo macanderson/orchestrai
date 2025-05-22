@@ -1,5 +1,5 @@
 'use client';
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface TenantContextType {
   tenantId: string;
@@ -7,7 +7,7 @@ interface TenantContextType {
 }
 
 const TenantContext = createContext<TenantContextType>({
-  tenantId: "",
+  tenantId: '',
   setTenantId: () => {},
 });
 
@@ -26,7 +26,7 @@ export const TenantProvider = ({
     if (initialTenantId && initialTenantId !== tenantId) {
       setTenantIdState(initialTenantId);
     }
-  }, [initialTenantId]);
+  }, [initialTenantId, tenantId]); // Added tenantId to dependency array
 
   const setTenantId = (id: string) => {
     if (id === tenantId) return;
@@ -36,8 +36,6 @@ export const TenantProvider = ({
   };
 
   return (
-    <TenantContext.Provider value={{ tenantId, setTenantId }}>
-      {children}
-    </TenantContext.Provider>
+    <TenantContext.Provider value={{ tenantId, setTenantId }}>{children}</TenantContext.Provider>
   );
 };
