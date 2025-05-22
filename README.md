@@ -1,8 +1,8 @@
-# Basic Turborepo with Python + Next.js + Shared Packages
+# OrchestrAI
 
-A powerful toolkit for creating, customizing, and deploying modern web apps. Python/FastAPI backend and a Next.js frontend including a ./packages/ folder for code common to any or all of the apps found in the ./apps directory.
+OrchestrAI enables users to create RAG enabled AI agents deployed as chatbots on public sites.
 
-## Features
+## Tech Stack
 
 - 🤖 Turborepo
 - Python 3.13 FastAPI backend
@@ -14,3 +14,5 @@ A powerful toolkit for creating, customizing, and deploying modern web apps. Pyt
 - Vercel deploy support
 
 ## Quick Start
+
+Coming soon...
