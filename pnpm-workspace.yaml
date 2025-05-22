@@ -5,7 +5,10 @@ packages:
   - packages/ui
   - packages/lib
 onlyBuiltDependencies:
-  - "@prisma/client"
+  - '@prisma/client'
+  - '@prisma/engines'
   - prisma
+  - puppeteer
   - sharp
   - unrs-resolver
+  - vue-demi
