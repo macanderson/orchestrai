@@ -1,4 +1,22 @@
+# Jest
+coverage/
+.jest-cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+*.swp
+
+# Prisma
+.prisma/
+prisma/
+prisma.db*
+
 # Python
+.venv/
 __pycache__/
 *.py[cod]
 *$py.class
@@ -27,7 +45,6 @@ MANIFEST
 .env.development
 .env.test
 .env.production
-.venv
 env/
 venv/
 ENV/
@@ -36,6 +53,8 @@ venv.bak/
 .pytest_cache/
 .coverage
 htmlcov/
+.venv/
+venv/
 
 # Next.js
 .next/
@@ -47,14 +66,3 @@ node_modules/
 .vercel
 *.tsbuildinfo
 next-env.d.ts
-
-# Jest
-coverage/
-.jest-cache/
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-.DS_Store

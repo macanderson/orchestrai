@@ -19,6 +19,8 @@ langchain-openai = "^0.3.18"
 qdrant-client = "^1.14.2"
 urllib3 = "^2.4.0"
 sentence-transformers = "^4.1.0"
+supabase = "^2.15.1"
+python-jose = "^3.4.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"

@@ -1,14 +1,16 @@
 from pydantic import BaseModel
-from typing import Optional, List
-import time
+from typing import Optional
+
 
 class AgentBase(BaseModel):
     name: str
     description: Optional[str] = None
     project_id: str
 
+
 class AgentCreate(AgentBase):
     prompt_template: str
+
 
 class AgentResponse(AgentBase):
     id: str

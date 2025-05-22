@@ -1,15 +1,17 @@
 from pydantic import BaseModel, HttpUrl
-from typing import Optional, List, Any, Dict
-import time
+from typing import Optional, Any, Dict
+
 
 class DocumentBase(BaseModel):
     title: str
     description: Optional[str] = None
     project_id: str
 
+
 class DocumentCreate(DocumentBase):
     source_url: Optional[HttpUrl] = None
     content_type: str
+
 
 class DocumentResponse(DocumentBase):
     id: str
@@ -20,9 +22,11 @@ class DocumentResponse(DocumentBase):
     updated_at: int
     created_by: Optional[str] = None
 
+
 class DocumentURLUpload(BaseModel):
     url: HttpUrl
     project_id: str
+
 
 class DocumentChunkResponse(BaseModel):
     id: str

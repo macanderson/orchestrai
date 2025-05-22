@@ -29,10 +29,7 @@ class DocumentRetriever:
 
         # Get all documents for the project
         documents = await self.prisma.document.find_many(
-            where={
-                "project_id": project_id,
-                "deleted_at": None
-            }
+            where={"project_id": project_id, "deleted_at": None}
         )
 
         if not documents:
@@ -55,13 +52,8 @@ class DocumentRetriever:
 
         # Get all chunks for these documents
         chunks = await self.prisma.document_chunk.find_many(
-            where={
-                "document_id": {"in": document_ids},
-                "deleted_at": None
-            },
-            include={
-                "document": True
-            }
+            where={"document_id": {"in": document_ids}, "deleted_at": None},
+            include={"document": True},
         )
 
         if not chunks:
@@ -75,14 +67,10 @@ class DocumentRetriever:
                 chunk_embedding = chunk.embedding
                 # Calculate cosine similarity
                 similarity = self._cosine_similarity(
-                    query_embedding,
-                    chunk_embedding
-                )
+                    query_embedding, chunk_embedding
+                )  # noqa: E501
 
-                results.append({
-                    "chunk": chunk,
-                    "similarity": similarity
-                })
+                results.append({"chunk": chunk, "similarity": similarity})
 
         # Sort by similarity (highest first)
         results = sorted(results, key=lambda x: x["similarity"], reverse=True)
@@ -94,19 +82,25 @@ class DocumentRetriever:
         formatted_results = []
         for result in top_results:
             chunk = result["chunk"]
-            formatted_results.append({
-                "id": chunk.id,
-                "content": chunk.content,
-                "metadata": chunk.metadata,
-                "similarity": result["similarity"],
-                "document_id": chunk.document_id,
-                "document_title": chunk.document.title if chunk.document else "",
-                "source": chunk.metadata.get("source", "")
-            })
+            formatted_results.append(
+                {
+                    "id": chunk.id,
+                    "content": chunk.content,
+                    "metadata": chunk.metadata,
+                    "similarity": result["similarity"],
+                    "document_id": chunk.document_id,
+                    "document_title": (
+                        chunk.document.title if chunk.document else ""
+                    ),  # chunk.document is not always present
+                    "source": chunk.metadata.get("source", ""),
+                }
+            )
 
         return formatted_results
 
-    def _cosine_similarity(self, embedding1: List[float], embedding2: List[float]) -> float:
+    def _cosine_similarity(
+        self, embedding1: List[float], embedding2: List[float]
+    ) -> float:
         """Calculate cosine similarity between two embeddings"""
         arr1 = np.array(embedding1)
         arr2 = np.array(embedding2)
