@@ -21,37 +21,16 @@
   -moz-osx-font-smoothing: grayscale;
   :root,
   .light,
+  .dark,
+  .radix-themes-dark,
+  .dark-theme,
+  .radix-themes-light,
+  .radix-themes-system,
+  .system-theme,
+  .system,
+  .radix-themes,
   .light-theme {
-    --violet-1: #fdfcfe;
-    --violet-2: #faf8ff;
-    --violet-3: #f3f0ff;
-    --violet-4: #ebe4ff;
-    --violet-5: #e2d8ff;
-    --violet-6: #d5c9fb;
-    --violet-7: #c4b4f2;
-    --violet-8: #af98e9;
-    --violet-9: #744cbd;
-    --violet-10: #6640a8;
-    --violet-11: #714db6;
-    --violet-12: #38245e;
-
-    --violet-a1: #5500aa03;
-    --violet-a2: #4900ff07;
-    --violet-a3: #3300ff0f;
-    --violet-a4: #4300ff1b;
-    --violet-a5: #4200ff27;
-    --violet-a6: #3900ed36;
-    --violet-a7: #3701d34b;
-    --violet-a8: #3900c967;
-    --violet-a9: #3900a1b3;
-    --violet-a10: #33008bbf;
-    --violet-a11: #340097b2;
-    --violet-a12: #170044db;
-
-    --violet-contrast: #fff;
-    --violet-surface: #f9f6ffcc;
-    --violet-indicator: #744cbd;
-    --violet-track: #744cbd;
+    --default-font-family: aeonik-mono, sans-serif;
   }
 
   @supports (color: color(display-p3 1 1 1)) {
@@ -97,7 +76,12 @@
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-family);
+  font-family: var(--default-font-family);
   font-size: var(--font-size);
   line-height: var(--font-line-height);
+}
+
+body,
+.rt-ThemeRoot {
+  font-family: var(--default-font-family) !important;
 }
