@@ -10,13 +10,21 @@ generator client_py {
   provider        = "prisma-client-py"
   output         = "../../apps/api/db/client"
   previewFeatures = ["multiSchema"]
+  recursive_type_depth = -1
 }
 
-generator client_ts {
-  provider        = "prisma-client-js"
-  output         = "../../apps/web/node_modules/@prisma/client"
+generator ts {
+  provider = "prisma-typegen"
+  output = "../../apps/web/node_modules/@prisma/client"
   previewFeatures = ["multiSchema"]
+  recursive_type_depth = -1
 }
+
+// generator client_ts {
+//   provider        = "prisma-client-js"
+//   output         = "../../apps/web/node_modules/@prisma/client"
+//   previewFeatures = ["multiSchema"]
+// }
 
 enum LicenseType {
   FREE
@@ -34,7 +42,7 @@ model License {
   type      LicenseType @default(FREE)
 
   // Children
-  tenants   Tenant[]    @relation("LicenseTenants")
+  tenants   Tenant[]
 
   // Audit fields
   createdAt DateTime    @default(now()) @map("created_at")
@@ -61,14 +69,15 @@ model Tenant {
   billingVatNumber String?   @map("billing_vat_number")
 
   // Children
-  users     User[]          @relation("TenantUsers")
-  projects  Project[]       @relation("TenantProjects")
-  jobs      Job[]           @relation("TenantJobs")
-  agents    Agent[]         @relation("TenantAgents")
+  users      User[]
+  projects   Project[]
+  jobs       Job[]
+  agents     Agent[]
+  candidates Candidate[]
 
   // Parent
   licenseId String?
-  license   License?  @relation("LicenseTenants", fields: [licenseId], references: [id])
+  license   License?  @relation(fields: [licenseId], references: [id])
 
   // Audit fields
   createdAt DateTime  @default(now()) @map("created_at")
@@ -97,8 +106,7 @@ model UserRole {
   permissions Json          @default("{\"role\": \"default\"}")
 
   // Children
-  users       User[]        @relation("UserRoleUsers")
-
+  users       User[]
   // Audit fields
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
@@ -120,13 +128,13 @@ model User {
 
   // Parents
   roleId        String?         @map("role_id")
-  role          UserRole?       @relation("UserRoleUsers", fields: [roleId], references: [id])
+  role          UserRole?       @relation(fields: [roleId], references: [id])
   tenantId      String?         @map("tenant_id")
-  tenant        Tenant?         @relation("TenantUsers", fields: [tenantId], references: [id])
+  tenant        Tenant?         @relation(fields: [tenantId], references: [id])
 
   // Children
-  projects      Project[]       @relation("UserProjects")
-  sessions      UserSession[]   @relation("UserSessions")
+  projects      Project[]
+  sessions      UserSession[]
 
   // Audit fields
   createdAt     DateTime        @default(now()) @map("created_at")
@@ -141,7 +149,7 @@ model User {
 model UserSession {
   id           String    @id @default(uuid())
   userId       String    @map("user_id")
-  user         User      @relation("UserSessions", fields: [userId], references: [id])
+  user         User      @relation(fields: [userId], references: [id])
   token        String    @unique
   expiresAt    DateTime  @map("expires_at")
   ipAddress    String?   @map("ip_address")
@@ -157,25 +165,89 @@ model UserSession {
   @@schema("auth")
 }
 
+enum CareerLevel {
+  ENTRY
+  MID
+  SENIOR
+  EXECUTIVE
+
+  @@map("career_levels")
+  @@schema("api")
+}
+
+enum EducationLevel {
+  HIGH_SCHOOL
+  ASSOCIATE
+  BACHELOR
+  MASTER
+  PHD
+
+  @@map("education_levels")
+  @@schema("api")
+}
+
+enum CandidateStatus {
+  ACTIVE
+  INACTIVE
+  HIRED
+  REJECTED
+
+  @@map("candidate_statuses")
+  @@schema("api")
+}
+
+enum CandidateSource {
+  ADVERTISING
+  COLD_CALL
+  EVENT
+  GITHUB
+  JOB_BOARD
+  JOB_FAIR
+  LINKEDIN
+  OTHER
+  REFERRAL
+  SOCIAL_MEDIA
+  UNKNOWN
+  WEBSITE
+
+  @@map("candidate_sources")
+  @@schema("api")
+}
 
 model Candidate {
-  id                String         @id @default(uuid())
-  firstName         String         @map("first_name")
-  lastName          String         @map("last_name")
-  email             String         @unique
-  phone             String?
-  resumeUrl         String?        @map("resume_url")
-  linkedinUrl       String?        @map("linkedin_url")
-  currentTitle      String?        @map("current_title")
-  currentCompany    String?        @map("current_company")
-  yearsOfExperience Int?           @map("years_of_experience")
-  skills            String[]
-  status            String         @default("active") @map("status")
-  source            String?        @map("source")
-  notes             String?
+  id                 String         @id @default(uuid())
+  firstName          String         @map("first_name")
+  lastName           String         @map("last_name")
+  email              String         @unique
+  phone              String?
+  resumeUrl          String?        @map("resume_url")
+  linkedinUrl        String?        @map("linkedin_url")
+  currentTitle       String?        @map("current_title")
+  currentCompany     String?        @map("current_company")
+  careerLevel        CareerLevel    @map("career_level") @default(ENTRY)
+  yearsOfExperience  Int?           @map("years_of_experience")
+  educationLevel     EducationLevel @map("education_level")
+  skills             String[]
+  languages          String[]
+  location           String?         @map("location")
+  currentSalary      Float?          @map("current_salary")
+  expectedSalary     Float?          @map("expected_salary")
+  currency           String?         @map("currency") @default("USD")
+  noticePeriod       Int?            @map("notice_period") @default(14)
+  noticePeriodUnit   String?         @map("notice_period_unit") @default("days")
+  visaStatus         String?         @map("visa_status")
+  immigrationStatus  String?         @map("immigration_status")
+  immigrationCountry String?         @map("immigration_country")
+  status             CandidateStatus @default(ACTIVE) @map("status")
+  source             CandidateSource @default(LINKEDIN) @map("source")
+  notes              String?
 
   // Children
-  jobCandidates     JobCandidate[] @relation("CandidateJobCandidates")
+  jobCandidates     JobCandidate[]
+
+  // Parents
+  tenantId String? @map("tenant_id")
+  tenant   Tenant? @relation(fields: [tenantId], references: [id])
 
   // Audit fields
   createdAt         DateTime       @default(now()) @map("created_at")
@@ -211,10 +283,10 @@ model Job {
 
   // Parents
   tenantId      String          @map("tenant_id")
-  tenant        Tenant          @relation("TenantJobs", fields: [tenantId], references: [id])
+  tenant        Tenant          @relation(fields: [tenantId], references: [id])
 
   // Children
-  jobCandidates JobCandidate[]  @relation("JobJobCandidates")
+  jobCandidates JobCandidate[]
 
   // Audit fields
   createdAt     DateTime        @default(now()) @map("created_at")
@@ -234,9 +306,9 @@ model JobCandidate {
 
   // Parents
   jobId       String    @map("job_id")
-  job         Job       @relation("JobJobCandidates", fields: [jobId], references: [id])
+  job         Job       @relation(fields: [jobId], references: [id])
   candidateId String    @map("candidate_id")
-  candidate   Candidate @relation("CandidateJobCandidates", fields: [candidateId], references: [id])
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
 
   // Audit fields
   createdAt   DateTime  @default(now()) @map("created_at")
@@ -257,9 +329,9 @@ model Project {
 
   // Parents
   tenantId    String    @map("tenant_id")
-  tenant      Tenant    @relation("TenantProjects", fields: [tenantId], references: [id])
+  tenant      Tenant    @relation(fields: [tenantId], references: [id])
   userId      String    @map("user_id")
-  user        User      @relation("UserProjects", fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
 
   // Audit fields
   createdAt   DateTime  @default(now()) @map("created_at")
@@ -306,11 +378,11 @@ model Agent {
 
   // Parents
   tenantId            String      @map("tenant_id")
-  tenant              Tenant      @relation("TenantAgents", fields: [tenantId], references: [id])
+  tenant              Tenant      @relation(fields: [tenantId], references: [id])
 
   // Children
-  conversations       Conversation[]    @relation("AgentConversations")
-  agentTasks          AgentTask[]       @relation("AgentTasks")
+  conversations       Conversation[]
+  agentTasks          AgentTask[]
 
   // Audit fields
   createdAt DateTime  @default(now())     @map("created_at")
@@ -325,8 +397,8 @@ model Agent {
 model Conversation {
   id          String      @id @default(uuid())
   agentId     String      @map("agent_id")
-  agent       Agent       @relation("AgentConversations", fields: [agentId], references: [id])
-  agentTasks  AgentTask[] @relation("AgentTasks")
+  agent       Agent       @relation(fields: [agentId], references: [id])
+  agentTasks  AgentTask[]
 
   // Audit fields
   createdAt   DateTime    @default(now()) @map("created_at")
@@ -341,13 +413,13 @@ model Conversation {
 model AgentTask {
   id             String       @id @default(uuid())
   agentId        String       @map("agent_id")
-  agent          Agent        @relation("AgentTasks", fields: [agentId], references: [id])
+  agent          Agent        @relation(fields: [agentId], references: [id])
   name           String       @map("name")
   description    String?      @map("description")
 
   // Parents
   conversationId String       @map("conversation_id")
-  conversation   Conversation @relation("AgentTasks", fields: [conversationId], references: [id])
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
 
   // Audit fields
   createdAt   DateTime  @default(now()) @map("created_at")
