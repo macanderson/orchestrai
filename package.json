@@ -14,7 +14,7 @@
     "schema": "packages/db/schema.prisma"
   },
   "scripts": {
-    "dev": "concurrently \"pnpm --filter web dev\" \"pnpm --filter api dev\"",
+    "dev": "concurrently \"pnpm --filter next dev --turbopack\" \"pnpm --filter api dev\"",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "generate:prisma:py": "cd packages/db/prisma && prisma generate --generator python",

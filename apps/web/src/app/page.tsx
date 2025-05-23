@@ -7,9 +7,7 @@ import { redirect } from 'next/navigation';
 
 export default async function Home() {
   // Check if user is logged in
-
-  const cookieStore = cookies();
-  // @ts-expect-error next/headers cookies() is sync in app router
+  const cookieStore = await cookies();
   const isLoggedIn = !!cookieStore.get('token');
 
   if (isLoggedIn) {

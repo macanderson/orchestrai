@@ -1,11 +1,10 @@
 import { TenantProvider } from '@/providers/TenantProvider';
-import { ThemeProvider } from '@/providers/ThemeProvider';
+import '@/styles/globals.css';
+import { Theme, ThemePanel } from '@radix-ui/themes';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import React from 'react';
 import { Toaster } from 'react-hot-toast';
-
-import '@/styles/global.css';
 
 export const metadata: Metadata = {
   title: 'OrchestrAI - AI-powered agents for your business',
@@ -17,14 +16,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const tenantId = cookieStore.get('X-Tenant-Id')?.value || '';
 
   return (
-    <html lang="en">
-      <body>
-        <ThemeProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
+        <Theme appearance="light" accentColor="violet">
           <TenantProvider tenantId={tenantId}>
             {children}
+            <ThemePanel />
             <Toaster />
           </TenantProvider>
-        </ThemeProvider>
+        </Theme>
       </body>
     </html>
   );
