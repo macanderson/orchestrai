@@ -126,6 +126,7 @@ model User {
 
   // Children
   projects      Project[]       @relation("UserProjects")
+  sessions      UserSession[]   @relation("UserSessions")
 
   // Audit fields
   createdAt     DateTime        @default(now()) @map("created_at")
@@ -136,6 +137,26 @@ model User {
   @@map("users")
   @@schema("auth")
 }
+
+model UserSession {
+  id           String    @id @default(uuid())
+  userId       String    @map("user_id")
+  user         User      @relation("UserSessions", fields: [userId], references: [id])
+  token        String    @unique
+  expiresAt    DateTime  @map("expires_at")
+  ipAddress    String?   @map("ip_address")
+  userAgent    String?   @map("user_agent")
+
+  // Audit fields
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  deleted      Boolean   @default(false) @map("deleted")
+  deletedAt    DateTime? @map("deleted_at")
+
+  @@map("user_sessions")
+  @@schema("auth")
+}
+
 
 model Candidate {
   id                String         @id @default(uuid())
@@ -175,6 +196,7 @@ enum JobStatus {
   @@map("job_statuses")
   @@schema("api")
 }
+
 model Job {
   id            String          @id @default(uuid())
   title         String
