@@ -6,6 +6,8 @@ from prisma import Prisma
 from api.core.config import settings
 import secrets
 import logging
+from fastapi import Depends
+from fastapi.security import OAuth2PasswordBearer
 
 logger = logging.getLogger(__name__)
 
@@ -392,3 +394,22 @@ class AuthService:
         )
 
         return True
+
+
+# Dependency injection for FastAPI authentication
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
+
+
+def get_auth_service() -> AuthService:
+    return AuthService()
+
+
+async def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    auth_service: AuthService = Depends(get_auth_service)
+):
+    """
+    Get the current user from the token.
+    """
+    return await auth_service.get_current_user(token)

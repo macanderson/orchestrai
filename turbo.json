@@ -1,16 +1,25 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
+  "globalDependencies": ["**/.env.*local", "**/.env", "**/tsconfig.json", "**/package.json"],
+  "tasks": {
     "dev": {
       "dependsOn": ["^dev"],
-      "outputs": []
+      "outputs": [],
+      "env": ["NODE_ENV", "DATABASE_URL", "NEXT_PUBLIC_API_URL"]
     },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": ["dist/**", ".next/**"],
+      "env": ["NODE_ENV", "DATABASE_URL", "NEXT_PUBLIC_API_URL"]
     },
     "lint": {
-      "outputs": []
+      "outputs": [],
+      "env": ["NODE_ENV"]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "env": ["NODE_ENV", "DATABASE_URL"]
     }
   }
 }

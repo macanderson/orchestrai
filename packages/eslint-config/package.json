@@ -1,0 +1,19 @@
+{
+  "name": "@orchestrai/eslint-config",
+  "version": "1.0.0",
+  "main": "base.js",
+  "private": true,
+  "author": "Mac Anderson <mac@macanderson.com>",
+  "license": "Apache-2.0",
+  "description": "Shared ESLint config for orchestrai monorepo",
+  "keywords": [
+    "eslint",
+    "eslintconfig",
+    "orchestrai",
+    "monorepo"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/macanderson/orchestrai"
+  }
+}

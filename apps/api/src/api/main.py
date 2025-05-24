@@ -10,7 +10,7 @@ from api.routes.v1.documents import router as documents_router
 from api.routes.v1.tenants import router as tenants_router
 from api.routes.v1.users import router as users_router
 from api.routes.v1.agents import router as agents_router
-from api.routes.v1.chat import router as chat_router
+from api.routes.v1.chats import router as chat_router
 from api.routes.v1.projects import router as projects_router
 from api.services.auth import AuthService
 from api.services.auth_dependency import get_current_user

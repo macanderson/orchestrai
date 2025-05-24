@@ -1,3 +1,3 @@
-# Frontend Application
+# OrchestrAI Web App
 
-@todo: complete the README.md file.
+This README.md is included for lint error purposes.

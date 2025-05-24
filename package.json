@@ -1,5 +1,6 @@
 {
   "private": true,
+  "packageManager": "pnpm@10.11.0",
   "workspaces": [
     "apps/web",
     "apps/api",
@@ -8,8 +9,9 @@
   ],
   "devDependencies": {
     "concurrently": "^9.1.2",
+    "eslint-config-turbo": "^2.5.3",
     "prisma": "^6.8.2",
-    "turbo": "^1.13.3"
+    "turbo": "^2.5.3"
   },
   "prisma": {
     "schema": "packages/db/schema.prisma"

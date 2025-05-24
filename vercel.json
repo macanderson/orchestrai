@@ -12,6 +12,13 @@
       "src": "apps/api/**/*.py",
       "use": "@vercel/python",
       "config": { "maxLambdaSize": "50mb" }
+    },
+    {
+      "src": "packages/eslint-config/base.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
     }
   ],
   "routes": [

@@ -4,6 +4,7 @@ packages:
   - packages/db
   - packages/ui
   - packages/lib
+  - packages/eslint-config
 onlyBuiltDependencies:
   - '@prisma/client'
   - '@prisma/engines'

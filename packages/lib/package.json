@@ -8,6 +8,10 @@
   "private": true,
   "scripts": {
     "type-check": "tsc --noEmit",
-    "test": "echo \"No tests yet\" && exit 0"
+    "test": "echo \"No tests yet\" && exit 0",
+    "lint": "eslint . --config=eslint.config.mjs"
+  },
+  "devDependencies": {
+    "@orchestrai/eslint-config": "*"
   }
 }

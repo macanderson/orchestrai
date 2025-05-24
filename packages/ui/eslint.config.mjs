@@ -9,12 +9,4 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-const eslintConfig = [
-  ...compat.extends(
-    require.resolve('@orchestrai/eslint-config/base'),
-    'next/core-web-vitals',
-    'next/typescript'
-  ),
-];
-
-export default eslintConfig;
+export default [...compat.extends(require.resolve('@orchestrai/eslint-config/base'))];
