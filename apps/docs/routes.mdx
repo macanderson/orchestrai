@@ -1,0 +1,130 @@
+# API Routes
+
+## **Authentication**
+
+- **All protected routes** use `Depends(get_current_user)` (or `get_current_tenant` for tenant routes) for authentication, ensuring only authorized users can access resources.
+
+---
+
+## **Auth Routes (`/auth`)**
+
+- **POST `/auth/register`**
+  Registers a new user.
+  **Request:** `UserRegister`
+  **Response:** `Token`
+- **POST `/auth/login`**
+  Authenticates a user and returns a token.
+  **Request:** `OAuth2PasswordRequestForm`
+  **Response:** `Token`
+- **POST `/auth/logout`**
+  Logs out the current user (token required).
+- **POST `/auth/refresh`**
+  Refreshes an access token.
+  **Request:** Token in header
+  **Response:** `Token`
+- **POST `/auth/change-password`**
+  Changes the current user's password.
+  **Request:** `PasswordChange`
+- **POST `/auth/request-password-reset`**
+  Requests a password reset token.
+  **Request:** `PasswordResetRequest`
+- **POST `/auth/reset-password`**
+  Resets a user's password using a reset token.
+  **Request:** `PasswordReset`
+- **GET `/auth/me`**
+  Gets the current user's info.
+  **Response:** `UserResponse`
+
+---
+
+## **User Routes (`/users`)**
+
+- **POST `/users/`**
+  Creates a new user.
+  **Request:** `UserRegister`
+  **Response:** `UserResponse`
+- **GET `/users/`**
+  Lists all users for the current tenant.
+  **Response:** `List[UserResponse]`
+- **GET `/users/{user_id}`**
+  Gets a specific user.
+  **Response:** `UserResponse`
+
+---
+
+## **Project Routes (`/projects`)**
+
+- **POST `/projects/`**
+  Creates a new project.
+  **Request:** `ProjectCreate`
+  **Response:** `ProjectResponse`
+- **GET `/projects/`**
+  Lists all projects for the current tenant.
+  **Response:** `List[ProjectResponse]`
+- **GET `/projects/{project_id}`**
+  Gets a specific project.
+  **Response:** `ProjectResponse`
+
+---
+
+## **Document Routes (`/documents`)**
+
+- **POST `/documents/upload-url`**
+  Uploads a document from a URL.
+  **Request:** `DocumentURLUpload`
+  **Response:** `Dict[str, Any]`
+- **POST `/documents/upload-file`**
+  Uploads a document file.
+  **Request:** `FormData` (project_id, file)
+  **Response:** `Dict[str, Any]`
+- **POST `/documents/upload-csv-data`**
+  Uploads and processes CSV data.
+  **Request:** `FormData` (project_id, file)
+  **Response:** `Dict[str, Any]`
+- **GET `/documents/{project_id}`**
+  Lists all documents for a project.
+  **Response:** `List[DocumentResponse]`
+
+---
+
+## **Agent Routes (`/agents`)**
+
+- **POST `/agents/`**
+  Creates a new agent.
+  **Request:** `AgentCreate`
+  **Response:** `AgentResponse`
+- **GET `/agents/{project_id}`**
+  Lists all agents for a project.
+  **Response:** `List[AgentResponse]`
+- **GET `/agents/detail/{agent_id}`**
+  Gets a specific agent.
+  **Response:** `AgentResponse`
+
+---
+
+## **Chat Routes (`/chat`)**
+
+- **POST `/chat/completion`**
+  Gets a chat completion for a session.
+  **Request:** `ChatCompletionRequest`
+  **Response:** `ChatCompletionResponse`
+- _(Other chat session/message endpoints may exist, but this is the main completion endpoint.)_
+
+---
+
+## **Tenant Routes (`/tenants`)**
+
+- **GET `/tenants/`**
+  Lists all tenants for the current tenant.
+  **Response:** `List[TenantResponse]`
+- **GET `/tenants/{tenant_id}`**
+  Gets a specific tenant.
+  **Response:** `TenantResponse`
+
+---
+
+### **General Notes**
+
+- All routes use shared, type-safe Pydantic schemas for request and response models.
+- All protected routes require authentication via a Bearer token.
+- All endpoints are lint error free and follow best practices for FastAPI and Pydantic.

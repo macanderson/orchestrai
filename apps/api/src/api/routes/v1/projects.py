@@ -1,25 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
-from typing import List, Optional
-from pydantic import BaseModel
-from api.core.auth import get_current_user
+from typing import List
+from api.schemas.project import ProjectCreate, ProjectResponse
+from api.services.auth import AuthService
+from api.services.auth_dependency import get_current_user
 import time
 
 router = APIRouter()
 
-
-class ProjectCreate(BaseModel):
-    name: str
-    description: Optional[str] = None
-
-
-class ProjectResponse(BaseModel):
-    id: str
-    name: str
-    description: Optional[str] = None
-    tenant_id: str
-    created_at: int
-    updated_at: int
-    created_by: Optional[str] = None
+auth_service = AuthService()
 
 
 @router.post("/", response_model=ProjectResponse)

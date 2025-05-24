@@ -10,7 +10,8 @@ from fastapi import (
 from typing import List, Dict, Any
 from api.schemas.document import DocumentResponse, DocumentURLUpload
 from api.services.document_processor import DocumentProcessor
-from api.core.auth import get_current_user
+from api.services.auth import AuthService
+from api.services.auth_dependency import get_current_user
 import tempfile
 import csv
 import io
@@ -18,6 +19,7 @@ import io
 
 router = APIRouter()
 document_processor = DocumentProcessor()
+auth_service = AuthService()
 
 
 @router.post("/upload-url", response_model=Dict[str, Any])

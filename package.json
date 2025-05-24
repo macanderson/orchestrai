@@ -8,6 +8,7 @@
   ],
   "devDependencies": {
     "concurrently": "^9.1.2",
+    "prisma": "^6.8.2",
     "turbo": "^1.13.3"
   },
   "prisma": {
@@ -17,13 +18,14 @@
     "dev": "concurrently \"pnpm --filter next dev --turbopack\" \"pnpm --filter api dev\"",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "generate:prisma:py": "cd packages/db/prisma && prisma generate --generator python",
+    "generate:prisma:py": "cd packages/db && prisma generate",
     "type-check": "pnpm -r run type-check",
     "test": "pnpm -r run test",
     "format": "concurrently \"pnpm --filter api format\" \"pnpm --filter web format\" \"pnpm --filter ui format\" \"pnpm --filter db format\"",
     "format:check": "concurrently \"pnpm --filter api format:check\" \"pnpm --filter web format:check\" \"pnpm --filter ui format:check\" \"pnpm --filter db format:check\""
   },
   "dependencies": {
+    "@prisma/client": "^6.8.2",
     "typescript": "^5.8.3"
   }
 }

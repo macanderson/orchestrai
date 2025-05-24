@@ -8,8 +8,8 @@ import os
 import asyncio
 import aiohttp
 import logging
-from ..core.config import settings
-from ..db.prisma_client import get_prisma_client
+from api.core.config import settings
+from api.db.prisma_client import get_prisma_client
 import time
 
 logger = logging.getLogger(__name__)

@@ -1,38 +1,77 @@
+import logging
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from prisma import Prisma
-from .core.config import settings
-from .routes.v1.auth import router as auth_router
-from .routes.v1.documents import router as documents_router
-from .routes.v1.agents import router as agents_router
-from .routes.v1.chat import router as chat_router
-from .routes.v1.projects import router as projects_router
-from .core.auth import get_current_user
-import logging
+from api.core.config import settings
+from api.routes.v1.auth import router as auth_router
+from api.routes.v1.documents import router as documents_router
+from api.routes.v1.tenants import router as tenants_router
+from api.routes.v1.users import router as users_router
+from api.routes.v1.agents import router as agents_router
+from api.routes.v1.chat import router as chat_router
+from api.routes.v1.projects import router as projects_router
+from api.services.auth import AuthService
+from api.services.auth_dependency import get_current_user
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
+
+# Initialize logger
 logger = logging.getLogger(__name__)
 
 # Initialize Prisma client
 prisma = Prisma()
 
+# Initialize auth service
+auth_service = AuthService()
 
-# Tenant middleware
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    await auth_service.prisma.connect()
+    yield
+    # Shutdown
+    await auth_service.prisma.disconnect()
+
+
 class TenantMiddleware(BaseHTTPMiddleware):
+    """
+    Tenant middleware.
+
+    This middleware is used to check if the tenant ID
+    is provided in the request headers. If not, it will
+    return a 400 error.
+
+    If the tenant ID is provided, it will store the tenant
+    ID in the request state for later use.
+
+    If the tenant ID is not provided, it will skip the
+    tenant check and continue processing the request.
+
+    If the tenant ID is provided, it will check if the tenant
+    exists in the database. If the tenant does not exist,
+    it will return a 404 error. If the tenant exists, it will
+    continue processing the request.
+    """
+
     async def dispatch(self, request: Request, call_next):
+        """
+        Dispatch the request.
+
+        This method is used to dispatch the request to the next middleware.
+        """
         tenant_id = request.headers.get("X-Tenant-Id")
 
         # Skip tenant check for auth endpoints and public routes
         if request.url.path.startswith(
-            "/api/v1/auth"
-        ) or request.url.path.startswith(  # noqa: E501
-            "/docs"
-        ):
+            settings.API_V1_STR + "/auth"
+        ) or request.url.path.startswith("/docs"):
             return await call_next(request)
 
         # For protected routes, ensure tenant ID is provided
@@ -51,9 +90,21 @@ class TenantMiddleware(BaseHTTPMiddleware):
 
 
 app = FastAPI(
-    title="DocuChat API",
-    description="API for RAG-based documentation chat system",
+    title=settings.PROJECT_NAME,
+    description="API for OrchestrAI",
     version="1.0.0",
+    license_info={
+        "name": "MIT License",
+        "url": "https://opensource.org/licenses/MIT",
+    },
+    contact={
+        "name": settings.PROJECT_NAME,
+        "url": "https://orchestrai.com",
+    },
+    lifespan=lifespan,
+    docs_url=f"{settings.API_V1_STR}/docs",
+    redoc_url=f"{settings.API_V1_STR}/redoc",
+    openapi_url=f"{settings.API_V1_STR}/openapi.json",
 )
 
 # Add CORS middleware
@@ -82,33 +133,49 @@ async def shutdown():
 
 
 # Register routers
-app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
+app.include_router(
+    auth_router,
+    prefix=f"{settings.API_V1_STR}/auth",
+    tags=["Authentication"],
+)
 app.include_router(
     documents_router,
-    prefix="/api/v1/documents",
+    prefix=f"{settings.API_V1_STR}/documents",
     tags=["Documents"],
     dependencies=[Depends(get_current_user)],
 )
 app.include_router(
     agents_router,
-    prefix="/api/v1/agents",
+    prefix=f"{settings.API_V1_STR}/agents",
     tags=["Agents"],
     dependencies=[Depends(get_current_user)],
 )
 app.include_router(
     chat_router,
-    prefix="/api/v1/chat",
+    prefix=f"{settings.API_V1_STR}/chat",
     tags=["Chat"],
     dependencies=[Depends(get_current_user)],
 )
 app.include_router(
     projects_router,
-    prefix="/api/v1/projects",
+    prefix=f"{settings.API_V1_STR}/projects",
     tags=["Projects"],
+    dependencies=[Depends(get_current_user)],
+)
+app.include_router(
+    tenants_router,
+    prefix=f"{settings.API_V1_STR}/tenants",
+    tags=["Tenants"],
+    dependencies=[Depends(get_current_user)],
+)
+app.include_router(
+    users_router,
+    prefix=f"{settings.API_V1_STR}/users",
+    tags=["Users"],
     dependencies=[Depends(get_current_user)],
 )
 
 
-@app.get("/api/v1/health")
+@app.get(f"{settings.API_V1_STR}/health")
 async def health_check():
     return {"status": "healthy"}

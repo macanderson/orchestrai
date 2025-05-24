@@ -4,6 +4,11 @@ from typing import List
 
 
 class Settings(BaseSettings):
+    """Settings for the application.
+
+    This class is used to store the settings for the application.
+    """
+
     PROJECT_NAME: str = "OrchestrAI"
     API_V1_STR: str = "/api/v1"
 
@@ -14,13 +19,13 @@ class Settings(BaseSettings):
     ]  # noqa: E501
 
     # Security
-    SECRET_KEY: str = os.environ.get("SECRET_KEY", "supersecretkey")
+    AUTH_SECRET_KEY: str = os.environ.get("AUTH_SECRET_KEY", None)  # noqa: E501
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
 
     # Database
     DATABASE_URL: str = os.environ.get(
         "DATABASE_URL",
-        "postgresql://postgres:postgres@localhost:5432/orchestrai",  # noqa: E501
+        None,  # noqa: E501
     )
 
     # Vector database settings
@@ -38,11 +43,11 @@ class Settings(BaseSettings):
     EMBEDDING_MODEL: str = "all-MiniLM-L6-v2"
 
     # Redis
-    REDIS_URL: str = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+    REDIS_URL: str = os.environ.get("REDIS_URL", None)
 
     # Supabase
-    SUPABASE_URL: str = os.environ.get("SUPABASE_URL", "")
-    SUPABASE_KEY: str = os.environ.get("SUPABASE_KEY", "")
+    SUPABASE_URL: str = os.environ.get("SUPABASE_URL", None)
+    SUPABASE_KEY: str = os.environ.get("SUPABASE_KEY", None)
 
     # Crawling settings
     MAX_URLS_PER_PROJECT: int = 100
