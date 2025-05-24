@@ -1,8 +1,0 @@
-{
-  "name": "api",
-  "scripts": {
-    "dev": "uvicorn main:app --reload --host 0.0.0.0 --port 8000",
-    "type-check": "echo \"Skipping type-check for Python project\" && exit 0",
-    "test": "echo \"No tests yet\" && exit 0"
-  }
-}

@@ -2,6 +2,7 @@
   "name": "web",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -22,13 +23,17 @@
     "react-hot-toast": "^2.5.2"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
+    "@eslint/eslintrc": "^3.0.0",
     "@types/node": "^20.17.50",
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
     "autoprefixer": "^10.4.21",
-    "eslint": "^9",
+    "@orchestrai/eslint-config": "workspace:*",
+    "eslint": "^9.0.0",
     "eslint-config-next": "15.3.2",
+    "eslint-config-turbo": "^2.5.3",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "postcss": "^8.5.3",
     "radix-themes-tw": "^1.1.0",
     "tailwindcss": "^4.1.7",

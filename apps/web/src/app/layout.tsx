@@ -9,6 +9,22 @@ import { Toaster } from 'react-hot-toast';
 export const metadata: Metadata = {
   title: 'OrchestrAI - AI-powered agents for your business',
   description: 'AI-powered agent generation for your business',
+  icons: {
+    icon: [{ url: '/favicon.ico' }, { url: '/favicon.png', sizes: '32x32' }],
+  },
+  openGraph: {
+    title: 'OrchestrAI – Build Multi-Agent Apps with Clicks, Not Code',
+    description: 'Create powerful AI workflows using a visual, no-code interface.',
+    images: ['/orchestrai_social_preview.png'],
+    url: 'https://app.orchestrai.ai',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'OrchestrAI – Build Multi-Agent Apps with Clicks, Not Code',
+    description: 'Create powerful AI workflows using a visual, no-code interface.',
+    images: ['/orchestrai_social_preview.png'],
+  },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

@@ -5,7 +5,8 @@
     "apps/web",
     "apps/api",
     "packages/db",
-    "packages/ui"
+    "packages/ui",
+    "packages/eslint-config"
   ],
   "devDependencies": {
     "concurrently": "^9.1.2",
@@ -17,7 +18,7 @@
     "schema": "packages/db/schema.prisma"
   },
   "scripts": {
-    "dev": "concurrently \"pnpm --filter next dev --turbopack\" \"pnpm --filter api dev\"",
+    "dev": "concurrently \"pnpm --filter web dev --turbopack\" \"cd apps/api && PYTHONPATH=./src poetry run uvicorn api.main:app --reload --host 0.0.0.0 --port 8000\"",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "generate:prisma:py": "cd packages/db && prisma generate",

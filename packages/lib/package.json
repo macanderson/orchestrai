@@ -12,6 +12,6 @@
     "lint": "eslint . --config=eslint.config.mjs"
   },
   "devDependencies": {
-    "@orchestrai/eslint-config": "*"
+    "@orchestrai/eslint-config": "workspace:*"
   }
 }

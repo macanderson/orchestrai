@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from typing import List
 from api.schemas.auth import UserResponse
 from api.services.auth import AuthService
-from api.services.auth_dependency import get_current_user
+from api.services.auth import get_current_user
 import time
 
 router = APIRouter()

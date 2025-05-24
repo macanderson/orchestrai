@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 import bcrypt
 from jose import JWTError, jwt
-from prisma import Prisma
+from db.client import Prisma
 from api.core.config import settings
 import secrets
 import logging
@@ -17,7 +17,7 @@ class AuthService:
 
     def __init__(self):
         self.prisma = Prisma()
-        self.secret_key = settings.SECRET_KEY
+        self.JWT_SECRET_KEY = settings.JWT_SECRET_KEY
         self.algorithm = "HS256"
         self.access_token_expire_minutes = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
@@ -53,7 +53,7 @@ class AuthService:
             )
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(
-            to_encode, self.secret_key, algorithm=self.algorithm
+            to_encode, self.JWT_SECRET_KEY, algorithm=self.algorithm
         )
         return encoded_jwt
 
@@ -61,7 +61,7 @@ class AuthService:
         """Decode and validate a JWT token"""
         try:
             payload = jwt.decode(
-                token, self.secret_key,
+                token, self.JWT_SECRET_KEY,
                 algorithms=[self.algorithm],
                 options={"verify_exp": True}
             )
@@ -413,3 +413,14 @@ async def get_current_user(
     Get the current user from the token.
     """
     return await auth_service.get_current_user(token)
+
+
+async def get_current_tenant(
+    user=Depends(get_current_user)
+):
+    """
+    Dependency to get the current tenant from the current user.
+    """
+    if user and hasattr(user, "tenant"):
+        return user.tenant
+    return None

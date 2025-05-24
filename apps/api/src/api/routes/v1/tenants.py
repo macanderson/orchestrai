@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from typing import List
 from api.schemas.tenant import TenantResponse
-from api.core.auth import get_current_tenant
+from api.services.auth import get_current_tenant
 
 router = APIRouter()
 

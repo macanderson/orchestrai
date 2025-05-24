@@ -1,9 +1,9 @@
 // Custom ESLint base config for orchestrai monorepo
-// Usage: require this file in your .eslintrc.js as: require('eslint-config/base')
+// Usage: import this file in your .eslintrc.js as: import config from 'eslint-config/base'
 
-const turboConfig = require('eslint-config-turbo/flat');
+import turboConfig from 'eslint-config-turbo/flat';
 
-module.exports = [
+export default [
   ...turboConfig,
   // Other configuration
   {

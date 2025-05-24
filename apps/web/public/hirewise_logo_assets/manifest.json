@@ -1,0 +1,20 @@
+{
+    "name": "Hirewise.ai",
+    "short_name": "Hirewise",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#FFD700",
+    "icons": [
+        {
+            "src": "android_icon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "apple_touch_icon.png",
+            "sizes": "180x180",
+            "type": "image/png"
+        }
+    ]
+}

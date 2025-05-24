@@ -11,7 +11,7 @@ from api.schemas.chat import (
 from api.services.retriever import DocumentRetriever
 from api.services.llm_service import LLMService
 from api.services.auth import AuthService
-from api.services.auth_dependency import get_current_user
+from api.services.auth import get_current_user
 import time
 
 router = APIRouter()

@@ -13,13 +13,6 @@ generator client_py {
   recursive_type_depth = -1
 }
 
-generator ts {
-  provider = "prisma-typegen"
-  output = "../../apps/web/node_modules/@prisma/client"
-  previewFeatures = ["multiSchema"]
-  recursive_type_depth = -1
-}
-
 // generator client_ts {
 //   provider        = "prisma-client-js"
 //   output         = "../../apps/web/node_modules/@prisma/client"

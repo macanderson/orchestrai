@@ -1,7 +1,9 @@
 from typing import List, Dict, Any
 from bs4 import BeautifulSoup
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.document_loaders import PyPDFLoader, CSVLoader, TextLoader
+from langchain_community.document_loaders import (
+    PyPDFLoader, CSVLoader, TextLoader
+)
 # from langchain.document_loaders.html import BSHTMLLoader
 from sentence_transformers import SentenceTransformer
 import os
@@ -268,6 +270,9 @@ class DocumentProcessor:
         logger.info(f"Processing CSV data with {len(csv_data)} entries")
 
         # Create document record first
+        # TODO: SAVE DOCUMENT TO THE DATABASE
+        # TODO: MAKE THIS WORK FOR MULTIPLE DOCUMENTS
+        # TODO: MAKE A PYDANTIC MODEL FOR DOCUMENTS WITH MULTIPLE TYPES (PDF, TXT, CSV, DOCX, DOC, PPT, PPTX, XLS, XLSX, RTF, PAGES, KEYNOTE, SHEET, )
         document = await self.prisma.document.create({
             "data": {
                 "title": "Crawled Website Data",
